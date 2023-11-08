@@ -21,16 +21,14 @@ public class FeignController {
 
         List<CompletableFuture<TodoResponse>> futures = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++){
             CompletableFuture<TodoResponse> future = CompletableFuture.supplyAsync(() -> feignService.fetchData());
             futures.add(future);
         }
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 
-        CompletableFuture<Void> all0f = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
-
-        all0f.get(); // Wait for all requests to complete
+        allOf.get(); // Wait for all requests to complete
         long endTime = System.currentTimeMillis();
-
-        return "Total execution time: " + (endTime - startTime) + "ms";
+        return "Total execution time: " + (endTime - startTime) + " ms";
     }
 }
